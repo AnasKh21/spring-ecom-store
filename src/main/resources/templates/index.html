@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title th:text="${storeName}">MyStore</title>
+
+  <style>
+    :root{
+      --bg:#020617; --panel:#020617; --card:#0b1120; --muted:#94a3b8; --text:#e5e7eb;
+      --accent:#6366f1; --border:#1f2937; --ring:rgba(99,102,241,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:radial-gradient(circle at top,#111827,#020617);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    a{text-decoration:none;color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:24px 20px 40px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+    .title{font-size:1.7rem;font-weight:700;letter-spacing:.2px}
+    .muted{color:var(--muted);font-size:.9rem}
+    .tagline{margin-top:4px}
+    .btn{border-radius:999px;border:1px solid var(--border);padding:7px 13px;background:#020617;display:inline-flex;align-items:center;gap:6px;font-size:.85rem;}
+    .btn:hover{border-color:#3b82f6}
+    main{display:grid;grid-template-columns:260px 1fr;gap:18px}
+    @media (max-width:880px){ main{grid-template-columns:1fr} }
+
+    .panel{background:var(--panel);border-radius:16px;border:1px solid var(--border);padding:16px}
+    .panel h2{margin:0 0 10px;font-size:1rem;font-weight:600}
+    .panel small{font-size:.8rem;color:var(--muted)}
+
+    .cats-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .cat-pill{
+      border-radius:999px;border:1px solid var(--border);padding:8px 11px;
+      background:#020617;display:flex;justify-content:space-between;align-items:center;
+      font-size:.9rem;transition:.1s ease;
+    }
+    .cat-pill:hover{border-color:#3b82f6;background:#020617}
+    .cat-pill span:first-child{max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .chip-count{font-size:.75rem;color:var(--muted)}
+
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+    .card{
+      background:var(--card);border-radius:14px;border:1px solid var(--border);
+      padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px;
+      transition:transform .08s ease,border-color .12s ease,box-shadow .12s ease;
+    }
+    .card:hover{transform:translateY(-1px);border-color:#3b82f6;box-shadow:0 14px 30px rgba(15,23,42,.45)}
+    .card img{max-height:150px;object-fit:contain;margin:0 auto;display:block}
+    .prod-title{font-size:.94rem;font-weight:600;min-height:2.4em}
+    .prod-price{font-weight:700;font-size:.96rem}
+    .prod-meta{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--muted)}
+    .stars{color:#fbbf24;font-size:.8rem}
+    .badge-cat{font-size:.75rem;padding:3px 7px;border-radius:999px;border:1px solid var(--border);background:#020617;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="title" th:text="${storeName}">MyStore</div>
+        <div class="muted tagline">Petit store en Java/Spring 🎯</div>
+      </div>
+      <div>
+        <a class="btn" th:href="@{/categories}">📦 Voir toutes les catégories</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- Colonne gauche : catégories -->
+      <section class="panel">
+        <h2>Catégories</h2>
+        <small th:text="${#lists.isEmpty(categories)} ? 'Aucune catégorie disponible' : ${#lists.size(categories)} + ' catégories'">
+          0 catégories
+        </small>
+
+        <div class="cats-list" th:if="${!#lists.isEmpty(categories)}">
+          <a class="cat-pill"
+             th:each="c : ${categories}"
+             th:href="@{/categories/{cat}(cat=${c})}">
+            <span th:text="${c}">catégorie</span>
+            <span class="chip-count">Voir les produits →</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Colonne droite : produits -->
+      <section class="panel">
+        <h2>Produits</h2>
+        <small th:text="${#lists.isEmpty(produits)} ? 'Aucun produit à afficher' : ${#lists.size(produits)} + ' produits trouvés'">
+          0 produits
+        </small>
+
+        <div class="products-grid" th:if="${!#lists.isEmpty(produits)}">
+          <a class="card" th:each="p : ${produits}" th:href="@{/product/{id}(id=${p.id})}">
+            <img th:if="${p.image}" th:src="${p.image}" alt="" />
+            <div class="prod-title" th:text="${p.title}">Titre du produit</div>
+            <div class="prod-price" th:text="${#numbers.formatDecimal(p.price,1,2)} + ' €'">0,00 €</div>
+            <div class="prod-meta">
+              <div class="stars" th:if="${p.rating != null}">
+                <span th:each="i : ${#numbers.sequence(1,5)}"
+                      th:text="${i <= T(java.lang.Math).round(p.rating.rate)} ? '★' : '☆'">★</span>
+              </div>
+              <div class="badge-cat" th:text="${p.category}">catégorie</div>
+            </div>
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
