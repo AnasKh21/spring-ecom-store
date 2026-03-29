@@ -1,0 +1,13 @@
+@startuml
+class Order {
+  id: Long
+  status: String
+}
+
+class OrderItem {
+  quantity: int
+  unitPrice: BigDecimal
+}
+
+Order "1" -- "*" OrderItem
+@enduml
