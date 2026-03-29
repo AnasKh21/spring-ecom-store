@@ -3,113 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title th:text="${p.title}">Détail produit</title>
-
-  <style>
-    :root{
-      --bg:#020617; --panel:#020617; --card:#0b1120; --muted:#94a3b8; --text:#e5e7eb;
-      --accent:#6366f1; --border:#1f2937; --price:#f97316;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:radial-gradient(circle at top,#111827,#020617);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-    a{text-decoration:none;color:inherit}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    .breadcrumbs{font-size:.85rem;margin-bottom:10px;color:var(--muted)}
-    .breadcrumbs a{text-decoration:underline dotted;color:var(--muted)}
-    .breadcrumbs span{color:var(--muted)}
-    main{
-      display:grid;grid-template-columns:minmax(0,360px) minmax(0,1.3fr);gap:22px;
-      align-items:flex-start;
-    }
-    @media (max-width:900px){ main{grid-template-columns:1fr; } }
-    .image-panel{
-      background:var(--panel);border-radius:16px;border:1px solid var(--border);
-      padding:18px;display:flex;align-items:center;justify-content:center;
-    }
-    .image-panel img{max-width:100%;max-height:350px;object-fit:contain}
-    .info-panel{
-      background:var(--panel);border-radius:16px;border:1px solid var(--border);
-      padding:18px;display:flex;flex-direction:column;gap:12px;
-    }
-    .title{font-size:1.5rem;font-weight:700;line-height:1.25}
-    .category{font-size:.85rem;color:var(--muted)}
-    .category a{text-decoration:underline dotted}
-    .rating{display:flex;align-items:center;gap:8px;font-size:.9rem}
-    .stars{color:#fbbf24;font-size:.9rem}
-    .count{color:var(--muted);font-size:.85rem}
-    .price{font-size:1.4rem;font-weight:700;color:var(--price)}
-    .desc-title{font-size:1rem;font-weight:600;margin-top:8px}
-    .description{font-size:.95rem;color:#e5e7eb;line-height:1.5;white-space:pre-line}
-    .actions{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
-    .btn-primary,.btn-ghost{
-      border-radius:999px;padding:9px 16px;font-size:.9rem;display:inline-flex;align-items:center;gap:6px;
-      cursor:pointer;border:1px solid transparent;background:transparent;color:inherit;
-    }
-    .btn-primary{background:#22c55e;border-color:#22c55e;color:#022c22;font-weight:600}
-    .btn-primary:hover{background:#16a34a;border-color:#16a34a}
-    .btn-ghost{border-color:var(--border);background:#020617}
-    .btn-ghost:hover{border-color:#3b82f6}
-    .small-muted{font-size:.8rem;color:var(--muted)}
-  </style>
+  <title th:text="${p.title}">Produit</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="wrap">
+  <div class="container">
+    <header>
+      <a th:href="@{/}" class="logo">STORE</a>
+      <nav class="nav-links">
+        <a th:href="@{/categories}">Catégories</a>
+      </nav>
+    </header>
 
-    <!-- Breadcrumbs -->
     <div class="breadcrumbs">
-      <a th:href="@{/}">Accueil</a> ›
-      <a th:href="@{/categories}">Catégories</a> ›
-      <a th:href="@{/categories/{cat}(cat=${p.category})}" th:text="${p.category}">catégorie</a> ›
+      <a th:href="@{/}">Accueil</a> /
+      <a th:href="@{/categories}">Catégories</a> /
+      <a th:href="@{/categories/{cat}(cat=${p.category})}" th:text="${p.category}">Catégorie</a> /
       <span th:text="${p.title}">Produit</span>
     </div>
 
-    <main>
-      <!-- Colonne image -->
-      <section class="image-panel">
-        <img th:if="${p.image}" th:src="${p.image}" alt="Image produit">
+    <main class="product-detail">
+      <section class="product-detail-image">
+        <img th:if="${p.image}" th:src="${p.image}" th:alt="${p.title}">
         <span th:if="${p.image == null}">Pas d’image disponible</span>
       </section>
 
-      <!-- Colonne info -->
-      <section class="info-panel">
-        <div class="title" th:text="${p.title}">Nom du produit</div>
-
-        <div class="category">
-          Catégorie :
-          <a th:href="@{/categories/{cat}(cat=${p.category})}"
-             th:text="${p.category}">catégorie</a>
-        </div>
-
+      <section class="product-detail-info">
+        <span class="badge" th:text="${p.category}">Catégorie</span>
+        <h1 class="product-detail-title" th:text="${p.title}">Nom du produit</h1>
+        
         <div class="rating" th:if="${p.rating != null}">
-          <div class="stars">
-            <span th:each="i : ${#numbers.sequence(1,5)}"
-                  th:text="${i <= T(java.lang.Math).round(p.rating.rate)} ? '★' : '☆'">★</span>
-          </div>
-          <div>
-            <span th:text="${p.rating.rate}">0.0</span> / 5
-            <span class="count" th:text="'(' + ${p.rating.count} + ' avis)'">(0 avis)</span>
-          </div>
+          <span th:each="i : ${#numbers.sequence(1,5)}"
+                th:text="${i <= T(java.lang.Math).round(p.rating.rate)} ? '★' : '☆'">★</span>
+          <span class="muted-text" th:text="'(' + ${p.rating.count} + ' avis)'"></span>
         </div>
 
-        <div class="price" th:text="${#numbers.formatDecimal(p.price,1,2)} + ' €'">0,00 €</div>
+        <div class="product-detail-price" th:text="${#numbers.formatDecimal(p.price,1,2)} + ' €'">0,00 €</div>
 
-        <div class="desc-title">Description</div>
-        <p class="description" th:text="${p.description}">
-          Description du produit…
+        <div style="margin-top: 1rem;">
+          <h3>Description</h3>
+          <p class="product-detail-description" th:text="${p.description}">
+            Description du produit…
+          </p>
+        </div>
+
+        <div class="product-actions">
+          <a th:href="@{/buy/{id}(id=${p.id})}" class="btn btn-buy">
+            Acheter maintenant
+          </a>
+          <button type="button" class="btn btn-outline">
+            Ajouter au panier
+          </button>
+        </div>
+        
+        <p class="muted-text" style="font-size: 0.75rem; margin-top: 1rem;">
+          Expédition gratuite sur toutes les commandes. Retours sous 30 jours.
         </p>
-
-        <div class="actions">
-          <button type="button" class="btn-primary">
-            🛒 Ajouter au panier
-          </button>
-          <button type="button" class="btn-ghost">
-            ♥ Ajouter à la liste d’envies
-          </button>
-        </div>
-
-        <div class="small-muted">
-          Page de démonstration – aucune commande réelle n’est effectuée.
-        </div>
       </section>
     </main>
   </div>

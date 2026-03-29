@@ -59,7 +59,7 @@ public class OrderEntity {
         this.id = id;
     }
 
-    public OrderStatus getStatus() {
+    public OrderStatus getOrderStatus() {
         return status;
     }
 

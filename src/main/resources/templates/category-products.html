@@ -3,70 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title th:text="'Produits – ' + ${category}">Produits par catégorie</title>
-
-  <style>
-    :root{
-      --bg:#020617; --panel:#020617; --card:#0b1120; --muted:#94a3b8; --text:#e5e7eb;
-      --accent:#6366f1; --border:#1f2937;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:radial-gradient(circle at top,#111827,#020617);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
-    a{text-decoration:none;color:inherit}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    header{margin-bottom:16px}
-    .title{font-size:1.6rem;font-weight:700}
-    .muted{color:var(--muted);font-size:.9rem}
-    .breadcrumbs{font-size:.85rem;margin-bottom:8px;color:var(--muted)}
-    .breadcrumbs a{text-decoration:underline dotted;color:var(--muted)}
-    .panel{background:var(--panel);border-radius:16px;border:1px solid var(--border);padding:16px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-    .card{
-      background:var(--card);border-radius:14px;border:1px solid var(--border);
-      padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px;
-      transition:transform .08s ease,border-color .12s ease,box-shadow .12s ease;
-    }
-    .card:hover{transform:translateY(-1px);border-color:#3b82f6;box-shadow:0 14px 30px rgba(15,23,42,.45)}
-    .card img{max-height:150px;object-fit:contain;margin:0 auto}
-    .prod-title{font-size:.95rem;font-weight:600;min-height:2.4em}
-    .prod-price{font-weight:700;font-size:.96rem}
-    .meta{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--muted)}
-    .stars{color:#fbbf24;font-size:.8rem}
-  </style>
+  <title th:text="${category}">Produits</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="wrap">
-    <div class="breadcrumbs">
-      <a th:href="@{/}">Accueil</a> ›
-      <a th:href="@{/categories}">Catégories</a> ›
-      <span th:text="${category}">catégorie</span>
-    </div>
-
+  <div class="container">
     <header>
-      <div class="title" th:text="'Produits – ' + ${category}">Produits</div>
-      <div class="muted" th:text="${#lists.size(produits)} + ' produits trouvés'">0 produits</div>
+      <a th:href="@{/}" class="logo">STORE</a>
+      <nav class="nav-links">
+        <a th:href="@{/categories}">Catégories</a>
+      </nav>
     </header>
 
-    <section class="panel">
-      <p class="muted" th:if="${#lists.isEmpty(produits)}">
-        Aucun produit dans cette catégorie.
-      </p>
+    <div class="breadcrumbs">
+      <a th:href="@{/}">Accueil</a> /
+      <a th:href="@{/categories}">Catégories</a> /
+      <span th:text="${category}">Catégorie</span>
+    </div>
 
-      <div class="grid" th:if="${!#lists.isEmpty(produits)}">
-        <a class="card" th:each="p : ${produits}" th:href="@{/product/{id}(id=${p.id})}">
-          <img th:if="${p.image}" th:src="${p.image}" alt="" />
-          <div class="prod-title" th:text="${p.title}">Titre du produit</div>
-          <div class="prod-price" th:text="${#numbers.formatDecimal(p.price,1,2)} + ' €'">0,00 €</div>
-          <div class="meta">
-            <div class="stars" th:if="${p.rating != null}">
-              <span th:each="i : ${#numbers.sequence(1,5)}"
-                    th:text="${i <= T(java.lang.Math).round(p.rating.rate)} ? '★' : '☆'">★</span>
-            </div>
-            <span th:text="${p.category}">catégorie</span>
-          </div>
-        </a>
+    <main>
+      <div style="margin-bottom: 2rem;">
+        <h1 th:text="${category}">Catégorie</h1>
+        <p class="muted-text" th:text="${#lists.size(produits)} + ' produits trouvés'"></p>
       </div>
-    </section>
+
+      <div class="grid">
+        <div class="product-card" th:each="p : ${produits}">
+          <a th:href="@{/product/{id}(id=${p.id})}" class="product-image-wrapper">
+            <img th:if="${p.image}" th:src="${p.image}" th:alt="${p.title}" />
+          </a>
+          <div class="product-info">
+            <span class="product-category" th:text="${p.category}">Catégorie</span>
+            <a th:href="@{/product/{id}(id=${p.id})}" class="product-title" th:text="${p.title}">Titre du produit</a>
+            <div class="product-footer">
+              <span class="product-price" th:text="${#numbers.formatDecimal(p.price,1,2)} + ' €'">0,00 €</span>
+              <a th:href="@{/buy/{id}(id=${p.id})}" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.75rem;">Achat Rapide</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 </body>
 </html>
