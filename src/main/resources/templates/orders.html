@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes commandes</title>
+</head>
+
+<body>
+
+<h1>Mes commandes</h1>
+
+<div th:if="${orders.isEmpty()}">
+    <p>Aucune commande pour le moment</p>
+</div>
+
+<div th:if="${!orders.isEmpty()}">
+
+    <div th:each="order : ${orders}" style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+
+        <p>
+            <strong>ID :</strong>
+            <span th:text="${order.id}"></span>
+        </p>
+
+        <p>
+            <strong>Status :</strong>
+            <span th:text="${order.orderStatus}"></span>
+        </p>
+
+        <p>
+            <strong>Total :</strong>
+            <span th:text="${order.totalPrice}"></span>
+        </p>
+
+        <p>
+            <strong>Date :</strong>
+            <span th:text="${order.createdAt}"></span>
+        </p>
+
+        <!-- 🔥 Bouton PAY (important) -->
+        <div th:if="${order.orderStatus.name() == 'PENDING'}">
+
+            <a th:href="@{/orders/{id}/pay(id=${order.id})}">
+                Pay
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

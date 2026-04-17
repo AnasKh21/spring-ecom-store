@@ -27,7 +27,7 @@ public class OrderService {
 
     }
 
-    public OrderEntity createOrderWithOneItem(int productId, int quantity) {
+    public OrderEntity createOrder(int productId, int quantity) {
         // 1. Créer une nouvelle commande
         OrderEntity order = new OrderEntity();
         // 2. Récuperer le produit d'abord
@@ -57,5 +57,24 @@ public class OrderService {
     }
 
 
+    public OrderEntity payOrder(Long orderId) {
+
+        OrderEntity order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new IllegalArgumentException("Commande introuvable avec l'ID : " + orderId));
+
+        if (order.getOrderStatus() != OrderEntity.OrderStatus.PENDING) {
+            throw new IllegalStateException("Impossible de payer une commande qui n'est pas en statut PENDING");
+            }
+
+        order.setOrderStatus(OrderEntity.OrderStatus.PAID);
+
+        orderRepository.save(order);
+
+        return order;
+    }
+
+    public List<OrderEntity> getAllOrders() {
+        return orderRepository.findAll();
+    }
 
 }

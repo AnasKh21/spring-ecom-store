@@ -51,12 +51,22 @@
         </div>
 
         <div class="product-actions">
-          <a th:href="@{/buy/{id}(id=${p.id})}" class="btn btn-buy">
-            Acheter maintenant
-          </a>
+
+          <form th:action="@{/buy/{id}(id=${p.id})}" method="get" style="display:flex; gap:10px; align-items:center;">
+
+            <input type="number" name="quantity" value="1" min="1" 
+                  style="width:70px; padding:5px;" />
+
+            <button type="submit" class="btn btn-buy">
+              Acheter maintenant
+            </button>
+
+          </form>
+
           <button type="button" class="btn btn-outline">
             Ajouter au panier
           </button>
+
         </div>
         
         <p class="muted-text" style="font-size: 0.75rem; margin-top: 1rem;">

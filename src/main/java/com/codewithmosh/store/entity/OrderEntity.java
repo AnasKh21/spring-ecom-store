@@ -33,8 +33,11 @@ public class OrderEntity {
     public enum OrderStatus {
     PENDING,
     SHIPPED,
-    DELIVERED
-}
+    DELIVERED,
+    PAID,
+    CANCELED,
+    PAYMENT_FAILED
+    }
 
     @OneToMany(mappedBy = "order") // mappedBy indique que la relation est gérée par l'entité OrderItemEntity via l'attribut "order"
     private List<OrderItemEntity> items;
